@@ -17,7 +17,7 @@ switchesVarDefaults = (
     
 )
 
-progname = "framedClient"
+progname = "fileClient"
 
 try:
 
@@ -28,7 +28,6 @@ try:
         params.usage()
     
 except:
-    debug = 0
     pass
 
 
@@ -75,13 +74,15 @@ try:
     with open (fileName, "rb") as a:
         for data in fileName:
             data = a.read(1024)
-            
+            print(data)
             if data == "":
-                break
+                #break
+                sys.exit(0)
+            
 
             print("File data is being sent...")
             framedSend(s,data,debug)
-    
+            
 except FileNotFoundError as e:
 
     print("The file doesn't exist")
