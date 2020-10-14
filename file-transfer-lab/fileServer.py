@@ -26,34 +26,35 @@ print("listening on:", bindAddr)
 
 
 while True:
-    #print("Start")
     sock, addr = lsock.accept()
 
     from framedSock import framedSend, framedReceive
-
-    fileInfo = (framedReceive(sock,debug)).decode()
-    print("The file's name, size and remote name file was received")
-    print("File Info: ",fileInfo)
-    fileName, fileSize, remoteFileName = fileInfo.split(":")
-    fileSize = int(fileSize)
-    
+  
     if not os.fork():
+
+        fileInfo = (framedReceive(sock,debug)).decode()
+        print("The file's name, size and remote name file was received")
+        print("File Info: ",fileInfo)
+        fileName, fileSize, remoteFileName = fileInfo.split(":")
+        fileSize = int(fileSize)
+        
         print("new child process handling connection from", addr)
 
-        while True:
-        
-            with open (remoteFileName, "wb") as a:
-                print("File data is being recieved...")
-                payload = framedReceive(sock, debug)
-                payloadByte = bytes(payload)
-                a.write(payloadByte)
-   
-                if debug: print("rec'd: ", payload)
-                if not payload:
-                    if debug: print("child exiting")
-                    sys.exit(0)
-                    
+        with open (remoteFileName, "w") as f:
+            print("File data is being recieved...")
+            payload = framedReceive(sock, debug)
+
+            #Decodes payload if it is not none and writes to the remote file
+            #If payload is nothing is none then it writes nothing to the remote file
+
+            if payload is not None:
+                
+                payloadDecoded = payload.decode()
+                f.write(payloadDecoded)
                 framedSend(sock, payload, debug)
 
+
+        print("Exiting.....")    
+  
     else:
         sock.close()

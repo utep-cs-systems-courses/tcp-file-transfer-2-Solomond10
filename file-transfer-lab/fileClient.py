@@ -70,18 +70,20 @@ try:
     print(info)
     print("The file's name, size and remote name file was sent")
     framedSend(s,info,debug)
-    
-    with open (fileName, "rb") as a:
-        for data in fileName:
-            data = a.read(1024)
-            print(data)
-            if data == "":
-                #break
-                sys.exit(0)
-            
 
-            print("File data is being sent...")
-            framedSend(s,data,debug)
+    content = ""
+    
+    with open (fileName, "r") as a:
+        for data in fileName:
+            data = a.read()
+            
+            if not data:
+                break
+            else:
+                content = data.encode()
+
+        print("File data is being sent...")
+        framedSend(s,content,debug)
             
 except FileNotFoundError as e:
 
