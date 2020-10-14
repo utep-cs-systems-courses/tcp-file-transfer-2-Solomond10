@@ -62,9 +62,10 @@ s.connect(addrPort)
 try:
 
     sizeOfFile = os.path.getsize(fileName)
-
+    
     if sizeOfFile == 0:
         print("There's nothing in the file")
+        sys.exit(0)
     
     info = (f"{fileName}{separator}{sizeOfFile}{separator}{remoteFileName}".encode())
     print(info)
@@ -88,3 +89,4 @@ try:
 except FileNotFoundError as e:
 
     print("The file doesn't exist")
+    sys.exit(0)

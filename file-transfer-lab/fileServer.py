@@ -37,24 +37,34 @@ while True:
         print("File Info: ",fileInfo)
         fileName, fileSize, remoteFileName = fileInfo.split(":")
         fileSize = int(fileSize)
-        
-        print("new child process handling connection from", addr)
 
-        with open (remoteFileName, "w") as f:
-            print("File data is being recieved...")
-            payload = framedReceive(sock, debug)
+        #checks to see if file already exist
 
-            #Decodes payload if it is not none and writes to the remote file
-            #If payload is nothing is none then it writes nothing to the remote file
+        path = os.getcwd()+"/"+remoteFileName
 
-            if payload is not None:
+        if os.path.exists(path) is True:
+            print("The file is already on the server")
+            payload = framedReceive(sock,debug)
+            framedSend(sock, payload, debug)
+
+        else:
+
+            print("new child process handling connection from", addr)
+            with open (remoteFileName, "w") as f:
+
+                print("File data is being recieved...")
+                payload = framedReceive(sock, debug)
+
+                #Decodes payload if it is not none and writes to the remote file
+                #If payload is nothing is none then it writes nothing to the remote file
+                if payload is not None:
                 
-                payloadDecoded = payload.decode()
-                f.write(payloadDecoded)
-                framedSend(sock, payload, debug)
+                    payloadDecoded = payload.decode()
+                    f.write(payloadDecoded)
+                    framedSend(sock, payload, debug)
 
 
-        print("Exiting.....")    
+                    print("Exiting.....")    
   
     else:
         sock.close()
