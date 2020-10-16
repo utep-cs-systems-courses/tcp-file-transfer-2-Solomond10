@@ -85,6 +85,9 @@ try:
 
         print("File data is being sent...")
         framedSend(s,content,debug)
+
+    print("File contents being sent back")
+    framedReceive(s,debug)
             
 except FileNotFoundError as e:
 
