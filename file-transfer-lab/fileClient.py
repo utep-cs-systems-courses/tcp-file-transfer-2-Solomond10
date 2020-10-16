@@ -39,10 +39,10 @@ try:
         print("Server Port: ",serverPort)
 
 except:
-        serverHost = "127.0.0.1"
-        serverPort = 50001
-       
 
+    print("Can't parse server:port from '%s'" % server)
+    sys.exit(1)
+    
 fileName = input("Enter the file name from the client: ")
 remoteFileName = input("Enter the remote name for the server: ")
 separator = ":"
