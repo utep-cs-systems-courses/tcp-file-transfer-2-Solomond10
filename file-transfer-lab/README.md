@@ -11,3 +11,6 @@ is going to have on the server after it's transferred. The program will then
 transfer the file from the client to the server successfully. It will be
 unsuccessful when transferring the file if the file already exists on the
 server, has a length of zero, or doesn't exist.
+
+To run the program with threads instead of forks go into the thread directory
+then file-transfer-lab and run the program the same as you do here.
