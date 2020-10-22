@@ -7,7 +7,6 @@ sys.path.append("../lib")       # for params
 import params
 
 from encapFramedSock import EncapFramedSock    
-
 switchesVarDefaults = (
     (('-s', '--server'), 'server', "127.0.0.1:50001"),
     (('-d', '--debug'), "debug", False), # boolean (set if present)
@@ -21,7 +20,6 @@ server, usage, debug  = paramMap["server"], paramMap["usage"], paramMap["debug"]
 
 if usage:
     params.usage()
-
 
 try:
     serverHost, serverPort = re.split(":", server)
@@ -52,23 +50,34 @@ try:
 
     sizeOfFile = os.path.getsize(fileName)
     if sizeOfFile == 0:
-        print("There's nothing in the file")
+        print("\nThere's nothing in the file")
         sys.exit(0)
-
 
     fName = f"{fileName}".encode()
     fsock.send(fName,debug)
-    print("file name is sent so that it can be checked to see if its being used")
+    print("\nFile name was sent so that it can be checked to see if its being transferred\n")
 
-    i = input("Press Any key to continue -- The file is about to be written to on the server\n"
-        )
-    
-    info = (f"{fileName}{separator}{sizeOfFile}{separator}{remoteFileName}".encode())
-    print(info)
+    status = (fsock.receive(debug)).decode()
+    print("\nFile Transfer Status: ", status)
 
+    if status == "Waiting":
+
+        while True:
+            
+            status = (fsock.receive(debug)).decode()
+            if status is not "Waiting":
+                break
+            
+        
+    prompt = "\nStatus is Ready - Press enter to continue." 
+
+    i = input(prompt)
     
-    print("The file's name, size and remote name file was sent")
-    fsock.send(info,debug)
+    serverFileName = remoteFileName.encode()
+    
+    print("\nThe server file name was sent")
+    fsock.send(serverFileName,debug)
+
     content = ""
 
     with open (fileName, "r") as a:
@@ -80,15 +89,14 @@ try:
                 
             else:
                 content = data.encode()
-                print("File data is being sent...")
+                print("\nFile data is being sent...")
                 fsock.send(content,debug)
-                
 
-    print("File data was sent back to the client")
+    print("\nFile data was sent back to the client")
     fsock.receive(debug)
             
 except FileNotFoundError as e:
 
-    print("The file doesn't exist")
+    print("\nThe file doesn't exist")
     sys.exit(0)
 
