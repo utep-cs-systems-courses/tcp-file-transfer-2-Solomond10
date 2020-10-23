@@ -34,6 +34,9 @@ except:
 try:
         serverHost, serverPort = re.split(":",server)
         serverPort = int(serverPort)
+        print("Server: ",server)
+        print("Server Host: ",serverHost)
+        print("Server Port: ",serverPort)
 
 except:
 
@@ -41,7 +44,8 @@ except:
     sys.exit(1)
     
 fileName = input("Enter the file name from the client: ")
-remoteFileName = input("Enter the file name for the server: ")
+remoteFileName = input("Enter the remote name for the server: ")
+separator = ":"
         
 addrFamily = socket.AF_INET
 socktype = socket.SOCK_STREAM
@@ -63,8 +67,10 @@ try:
         print("There's nothing in the file")
         sys.exit(0)
     
-    serverFileName = remoteFileName.encode()
-    framedSend(s,serverFileName,debug)
+    info = (f"{fileName}{separator}{sizeOfFile}{separator}{remoteFileName}".encode())
+    print(info)
+    print("The file's name, size and remote name file was sent")
+    framedSend(s,info,debug)
 
     content = ""
     

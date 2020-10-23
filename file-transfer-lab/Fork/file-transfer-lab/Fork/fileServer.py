@@ -32,11 +32,15 @@ while True:
   
     if not os.fork():
 
-        serverFileName = (framedReceive(sock, debug)).decode()
-        print("The file's server name was received")
+        fileInfo = (framedReceive(sock,debug)).decode()
+        print("The file's name, size and remote name file was received")
+        print("File Info: ",fileInfo)
+        fileName, fileSize, remoteFileName = fileInfo.split(":")
+        fileSize = int(fileSize)
 
-        #checks to see if file already exist on server
-        path = os.getcwd()+"/"+serverFileName
+        #checks to see if file already exist
+
+        path = os.getcwd()+"/"+remoteFileName
 
         if os.path.exists(path) is True:
             print("The file is already on the server")
@@ -46,7 +50,7 @@ while True:
         else:
 
             print("new child process handling connection from", addr)
-            with open (serverFileName, "w") as f:
+            with open (remoteFileName, "w") as f:
 
                 print("File data is being recieved...")
                 payload = framedReceive(sock, debug)
@@ -58,6 +62,7 @@ while True:
                     payloadDecoded = payload.decode()
                     f.write(payloadDecoded)
                     framedSend(sock, payload, debug)
+
 
                     print("Exiting.....")    
   
